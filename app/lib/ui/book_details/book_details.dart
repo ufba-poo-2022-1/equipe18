@@ -1,13 +1,20 @@
-// ignore_for_file: lines_longer_than_80_chars
-
+import 'package:estante_livre/model/book.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/shelf_colors.dart';
 import '../book_confirmation/book_confirmation.dart';
 
-class BookDetails extends StatelessWidget {
-  const BookDetails({Key? key}) : super(key: key);
+class BookDetails extends StatefulWidget {
+  final Book book;
+  const BookDetails({
+    required this.book,
+    Key? key,
+  }) : super(key: key);
+  @override
+  _BookDetailsState createState() => _BookDetailsState();
+}
 
+class _BookDetailsState extends State<BookDetails> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -24,8 +31,8 @@ class BookDetails extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(40.0)),
             ),
 
-            //Definindo a coluna que vai ter a imagem e a parte de conteúdos do livro
-
+            /// Definindo a coluna que vai ter a imagem
+            /// e a parte de conteúdos do livro
             child: Padding(
               padding: const EdgeInsets.all(36),
               child: Row(
@@ -47,9 +54,7 @@ class BookDetails extends StatelessWidget {
                         height:
                             (MediaQuery.of(context).size.height * 0.6), //450,
                         width: (MediaQuery.of(context).size.width * 0.2), //300,
-                        child: Image.asset(
-                          'assets/images/test_BD.jpg',
-                        ),
+                        child: Image.network(widget.book.imageUrl),
                       ),
                     ),
                   ),
@@ -60,19 +65,19 @@ class BookDetails extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          'Nome do Livro',
-                          style: TextStyle(
+                        Text(
+                          widget.book.title,
+                          style: const TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
 
-                        const SizedBox(height: 36), //Espaçamento
+                        const SizedBox(height: 24), //Espaçamento
 
-                        const Text(
-                          'Gênero do Livro',
-                          style: TextStyle(
+                        Text(
+                          'Gênero do Livro: ${widget.book.genre}',
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
@@ -80,9 +85,9 @@ class BookDetails extends StatelessWidget {
 
                         const SizedBox(height: 24), //Espaçamento
 
-                        const Text(
-                          'Estado: Novo ou Usado',
-                          style: TextStyle(
+                        Text(
+                          'Estado: ${widget.book.rentStatus}',
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
@@ -90,9 +95,9 @@ class BookDetails extends StatelessWidget {
 
                         const SizedBox(height: 24), //Espaçamento
 
-                        const Text(
-                          'Localização',
-                          style: TextStyle(
+                        Text(
+                          'Localização: ${widget.book.location}',
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
@@ -100,9 +105,9 @@ class BookDetails extends StatelessWidget {
 
                         const SizedBox(height: 24), //Espaçamento
 
-                        const Text(
-                          'Condição: Boa ou Mostra Marcas',
-                          style: TextStyle(
+                        Text(
+                          'Condição: ${widget.book.bookCondition}',
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
@@ -111,13 +116,12 @@ class BookDetails extends StatelessWidget {
                         const SizedBox(height: 24), //Espaçamento
 
                         //Descrição mais elaborada do livro
-                        const SingleChildScrollView(
+                        SingleChildScrollView(
                           scrollDirection: Axis.vertical,
                           child: Text(
-                            'Breve descrição pelo autor do anúncio sobre o livro.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab',
+                            widget.book.description,
                             maxLines: 3,
-                            style: TextStyle(
-                              //overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
                               fontSize: 20,
                             ),
                           ),
@@ -143,8 +147,6 @@ class BookDetails extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              //Renderização do Widget
-                              onPressed: () {},
                               child: const Text(
                                 'Voltar',
                                 style: TextStyle(
@@ -153,6 +155,7 @@ class BookDetails extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              onPressed: Navigator.of(context).pop,
                             ),
 
                             //Botão de Solicitação
@@ -169,18 +172,6 @@ class BookDetails extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              //Renderização do Widget
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return const Dialog(
-                                      backgroundColor: Colors.transparent,
-                                      child: BookConfirmation(),
-                                    );
-                                  },
-                                );
-                              },
                               child: const Text(
                                 'Solicitar Doação',
                                 style: TextStyle(
@@ -189,6 +180,21 @@ class BookDetails extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      backgroundColor: Colors.transparent,
+                                      child: BookConfirmation(
+                                        bookName: widget.book.title,
+                                        bookOwner: widget.book.owner,
+                                        bookLocation: widget.book.location,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           ],
                         ),
